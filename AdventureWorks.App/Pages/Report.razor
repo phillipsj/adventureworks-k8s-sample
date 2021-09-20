@@ -1,0 +1,59 @@
+@page "/report"
+@using ChartJs.Blazor.BarChart
+@using System.Drawing
+@using AdventureWorks.App.Data
+@using ChartJs.Blazor.BarChart.Axes
+@using ChartJs.Blazor.Common
+@inject SalesInfoService _salesService
+
+<h3>Report</h3>
+<hr/>
+<Chart Config="_config" @ref="_chart"></Chart>
+
+@code {
+    private BarConfig _config;
+    private Chart _chart;
+
+    protected override void OnInitialized() {
+        _config = new BarConfig {
+            Options = new BarOptions {
+                Responsive = true,
+                Title = new OptionsTitle {
+                    Display = true,
+                    Text = "Sales Info"
+                },
+                Tooltips = new Tooltips {
+                    Mode = InteractionMode.Index,
+                    Intersect = false
+                },
+                Scales = new BarScales {
+                    XAxes = new List<CartesianAxis> {
+                        new BarCategoryAxis {
+                            Stacked = true
+                        }
+                    },
+                    YAxes = new List<CartesianAxis> {
+                        new BarLinearCartesianAxis {
+                            Stacked = true
+                        }
+                    }
+                }
+            }
+        };
+        var salesData = _salesService.GetSalesInfo();
+        IDataset<int> quotaData = new BarDataset<int>(salesData.Select(x => x.Quota)) {
+            Label = "Quota",
+            BackgroundColor = ColorUtil.FromDrawingColor(Color.FromArgb(255, 159, 64))
+        };
+
+        IDataset<int> ytdData = new BarDataset<int>(salesData.Select(x => x.Ytd)) {
+            Label = "YTD",
+            BackgroundColor = ColorUtil.FromDrawingColor(Color.FromArgb(153, 102, 255))
+        };
+
+        _config.Data.Labels.AddRange(salesData.Select(x => x.Name));
+        _config.Data.Datasets.Add(quotaData);
+        _config.Data.Datasets.Add(ytdData);
+    }
+
+}

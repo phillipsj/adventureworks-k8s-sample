@@ -1,0 +1,54 @@
+@page "/stores"
+@using AdventureWorks.App.Data
+@using BlazorLeaflet
+@using BlazorLeaflet.Models
+@using System.Text
+@inject RetailLocationService _locationService
+@inject IJSRuntime _jsRuntime
+
+<h1>Retail Locations for Adventure Works</h1>
+
+<div class="my-3">
+    <div id="mapContainer" style="width: 100%; height: 600px;">
+        <LeafletMap Map="_map" />
+    </div>
+</div>
+
+@code {
+    private Map _map;
+
+    protected override void OnInitialized() {
+        _map = new Map(_jsRuntime) {
+            Center = new LatLng(0f, 0f),
+            Zoom = 2
+        };
+        
+        var locations = _locationService.GetLocations();
+        var markers = new List<Marker>();
+        foreach (var location in locations) {
+            var content = new StringBuilder(location.Name);
+            content.AppendLine(location.AddressLine1);
+            content.AppendLine(location.AddressLine2);
+            content.AppendLine($@"{location.City}, {location.StateProvince} {location.PostalCode}");
+            content.AppendLine(location.Country);
+            var marker = new Marker(location.Latitude, location.Longitude) {
+                Tooltip = new Tooltip {
+                    Content = location.Name
+                },
+                Popup = new Popup() {
+                    Content = content.ToString()
+                }
+            };
+            markers.Add(marker);
+        }
+        
+        _map.OnInitialized += () => {
+            _map.AddLayer(new TileLayer {
+                UrlTemplate = "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                Attribution = "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
+            });
+            
+            markers.ForEach(x => _map.AddLayer(x));
+        };
+    }
+}
