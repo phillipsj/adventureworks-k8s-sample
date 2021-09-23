@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: adventureworks-app
+  name: adventureworks-app
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  selector:
+    app: adventureworks-app
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: adventureworks-app
+  name: adventureworks-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: adventureworks-app
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        traefik.enable: "true"
+        traefik.http.routers.wb.entrypoints: adventureworks-app
+        traefik.http.routers.web.rule: Host(`localhost`)
+      labels:
+        app: adventureworks-app
+    spec:
+      containers:
+      - env:
+        - name: ConnectionStrings__AdventureWorks
+          value: |
+            Data Source=10.42.158.3;Initial Catalog=AdventureWorks2019;Integrated Security=False;User Id=sa;Password=ThisIsNotASecurePassword123;MultipleActiveResultSets=True
+        image: phillipsj/adventureworks-app:v0.1.0
+        name: adventureworks-app
+        ports:
+        - containerPort: 80
+      restartPolicy: Always
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/os
+                    operator: In
+                    values:
+                      - windows

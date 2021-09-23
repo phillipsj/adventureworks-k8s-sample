@@ -1,0 +1,14 @@
+﻿apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: adventureworks-app
+  namespace: default
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: PathPrefix(`/`)
+      services:
+        - name: adventureworks-app
+          port: 80
