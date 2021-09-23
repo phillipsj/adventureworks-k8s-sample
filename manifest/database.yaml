@@ -1,0 +1,46 @@
+﻿apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: adventureworks
+  name: adventureworks
+spec:
+  ports:
+    - name: sql
+      port: 1433
+      targetPort: 1433
+  selector:
+    app: adventureworks
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: adventureworks
+  name: adventureworks
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: adventureworks
+  template:
+    metadata:
+      labels:
+        app: adventureworks
+    spec:
+      containers:
+        - image: phillipsj/adventureworks:20210905
+          name: adventureworks
+          ports:
+            - containerPort: 1433
+          resources: {}
+      restartPolicy: Always
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/os
+                    operator: In
+                    values:
+                      - linux
