@@ -17,13 +17,16 @@ jobs:
         os: [ubuntu-latest, windows-2019, windows-2022]
         include:
         - os: ubuntu-latest
+          base: alpine
           file: Dockerfile.linux
         - os: windows-2019
+          base: nanoserver-1809
           file: Dockerfile.windows
         - os: windows-2022
+          base: nanoserver-ltsc2022
           file: Dockerfile.windows
     steps:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build -f ${{ matrix.file }} --tag adventureworks-app:$(date +%s) .
+      run: docker build -f ${{ matrix.file }} --tag adventureworks-app:$(date +%s) --build-arg BASE=${{ matrix.base }} .

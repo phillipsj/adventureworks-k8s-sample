@@ -1,4 +1,6 @@
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+ARG BASE
+
+FROM mcr.microsoft.com/dotnet/sdk:5.0-${BASE} AS build
 WORKDIR /src
 
 COPY AdventureWorks.sln AdventureWorks.sln
@@ -11,7 +13,7 @@ COPY BlazorLeaflet/. ./BlazorLeaflet/
 
 RUN dotnet publish -c release -o /app --no-restore
 
-FROM mcr.microsoft.com/dotnet/aspnet:5.0
+FROM mcr.microsoft.com/dotnet/aspnet:5.0-${BASE}
 WORKDIR /app
 COPY --from=build /app ./
 ENTRYPOINT ["dotnet", "AdventureWorks.App.dll"]
