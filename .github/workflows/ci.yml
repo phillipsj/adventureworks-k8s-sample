@@ -26,4 +26,4 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --tag adventureworks-app:$(date +%s)
+      run: docker build -f ${{ matrix.file }} --tag adventureworks-app:$(date +%s)
