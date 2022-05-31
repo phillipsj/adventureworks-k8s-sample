@@ -1,15 +1,29 @@
-name: CI
-
+name: CI Workflow
 on:
   push:
-    branches: [ main ]
+    branches:
+    - main
   pull_request:
-    branches: [ main ]
+    branches:
+    - main
 
 jobs:
-  build:
-    runs-on: windows-2019
+  build-containers:
+    name: Build Containers
+    runs-on: ${{ matrix.os }}
+    strategy:
+      max-parallel: 3
+      matrix:
+        os: [ubuntu-latest, windows-2019, windows-2022]
+        include:
+        - os: ubuntu-latest
+          file: Dockerfile.linux
+        - os: windows-2019
+          file: Dockerfile.windows
+        - os: windows-2022
+          file: Dockerfile.windows
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
     - name: Build the Docker image
       run: docker build . --tag adventureworks-app:$(date +%s)
