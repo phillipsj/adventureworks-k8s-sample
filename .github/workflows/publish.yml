@@ -14,12 +14,15 @@ jobs:
         os: [ubuntu-latest, windows-2019, windows-2022]
         include:
         - os: ubuntu-latest
+          base: alpine
           file: Dockerfile.linux
           tag: phillipsj/adventurworks-app:${{ github.event.release.tag_name }}-linux-amd64
         - os: windows-2019
+          base: nanoserver-1809
           file: Dockerfile.windows
           tag: phillipsj/adventurworks-app:${{ github.event.release.tag_name }}-windows-ltsc2019-amd64
         - os: windows-2022
+          base: nanoserver-ltsc2022
           file: Dockerfile.windows
           tag: phillipsj/adventurworks-app:${{ github.event.release.tag_name }}-windows-ltsc2022-amd64
     steps:
@@ -32,7 +35,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     - name: Docker Build
       run: |
-        docker build -f ${{ matrix.file }} -t ${{ matrix.tag }} .
+        docker build -f ${{ matrix.file }} --build-arg BASE=${{ matrix.base }} -t ${{ matrix.tag }} .
     - name: Docker Push
       run: |
         docker push ${{ matrix.tag }}
