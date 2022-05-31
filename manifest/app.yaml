@@ -33,8 +33,8 @@ spec:
       - env:
         - name: ConnectionStrings__AdventureWorks
           value: |
-            Data Source=adventureworks.svc;Initial Catalog=AdventureWorks2019;Integrated Security=False;User Id=sa;Password=ThisIsNotASecurePassword123;MultipleActiveResultSets=True
-        image: phillipsj/adventureworks-app:v0.4.0
+            Data Source=adventureworks;Initial Catalog=AdventureWorks2019;Integrated Security=False;User Id=sa;Password=ThisIsNotASecurePassword123;MultipleActiveResultSets=True
+        image: phillipsj/adventureworks-app:v0.1.0
         name: adventureworks-app
         ports:
         - containerPort: 80

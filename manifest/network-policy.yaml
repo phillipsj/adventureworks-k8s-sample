@@ -1,0 +1,19 @@
+apiVersion: projectcalico.org/v3
+kind: NetworkPolicy
+  name: allow-adventureworks-app-egress
+spec:
+  selector: app == 'adventureworks-app'
+  types:
+  - Egress
+  egress:
+  - action: Deny
+---
+apiVersion: projectcalico.org/v3
+kind: NetworkPolicy
+  name: allow-adventureworks-ingress
+spec:
+  selector: app == 'adventureworks'
+  types:
+  - Ingress
+  ingress:
+  - action: Deny
