@@ -26,10 +26,6 @@ spec:
   strategy: {}
   template:
     metadata:
-      annotations:
-        traefik.enable: "true"
-        traefik.http.routers.wb.entrypoints: adventureworks-app
-        traefik.http.routers.web.rule: Host(`localhost`)
       labels:
         app: adventureworks-app
     spec:
@@ -37,7 +33,7 @@ spec:
       - env:
         - name: ConnectionStrings__AdventureWorks
           value: |
-            Data Source=10.42.158.3;Initial Catalog=AdventureWorks2019;Integrated Security=False;User Id=sa;Password=ThisIsNotASecurePassword123;MultipleActiveResultSets=True
+            Data Source=adventureworks.svc;Initial Catalog=AdventureWorks2019;Integrated Security=False;User Id=sa;Password=ThisIsNotASecurePassword123;MultipleActiveResultSets=True
         image: phillipsj/adventureworks-app:v0.1.0
         name: adventureworks-app
         ports:

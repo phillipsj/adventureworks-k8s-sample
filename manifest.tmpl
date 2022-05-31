@@ -1,0 +1,18 @@
+image: phillipsj/pstools:{{build.tag}}
+manifests:
+  - image: phillipsj/adventureworks-app:{{build.tag}}-linux-amd64
+    platform:
+      architecture: amd64
+      os: linux
+      
+  - image: phillipsj/adventureworks-app:{{build.tag}}-windows-ltsc2019-amd64
+    platform:
+      architecture: amd64
+      os: windows
+      version: ltsc2019
+
+  - image: phillipsj/adventureworks-app:{{build.tag}}-windows-ltsc2022-amd64
+    platform:
+      architecture: amd64
+      os: windows
+      version: ltsc2022
